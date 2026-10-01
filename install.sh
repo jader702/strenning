@@ -121,10 +121,9 @@ rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 nginx -t
 
 echo "==> Configurando acesso ao painel admin"
-echo ""
-read -r -p "Usuario do painel (ex: admin): " ADMIN_USER
-ADMIN_USER="${ADMIN_USER:-admin}"
-htpasswd -c /etc/nginx/.cameras-htpasswd "$ADMIN_USER"
+ADMIN_USER="admin"
+ADMIN_PASS="$(openssl rand -base64 12)"
+htpasswd -bc /etc/nginx/.cameras-htpasswd "$ADMIN_USER" "$ADMIN_PASS"
 chmod 640 /etc/nginx/.cameras-htpasswd
 
 echo "==> Iniciando servicos"
@@ -137,11 +136,7 @@ echo "==> SSL com Let's Encrypt"
 if [[ "$DOMAIN" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "IP detectado, SSL nao sera configurado (requer dominio)."
 else
-  read -r -p "Configurar SSL automaticamente agora? (s/N): " ssl_resp
-  if [[ "${ssl_resp,,}" == "s" ]]; then
-    certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email
-    systemctl reload nginx
-  fi
+  certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email && systemctl reload nginx || true
 fi
 
 echo ""
@@ -157,4 +152,7 @@ echo ""
 echo " Site:    $PROTO://$DOMAIN/"
 echo " Painel:  $PROTO://$DOMAIN/admin/"
 echo " Usuario: $ADMIN_USER"
+echo " Senha:   $ADMIN_PASS"
+echo "============================================"
+echo " IMPORTANTE: Anote a senha acima!"
 echo "============================================"

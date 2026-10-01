@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh camera streaming admin status
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=30s
+AccuracySec=5s
+Unit=camera-streaming-status.service
+
+[Install]
+WantedBy=timers.target
+

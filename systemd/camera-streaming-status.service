@@ -1,0 +1,7 @@
+[Unit]
+Description=Generate camera streaming admin status
+
+[Service]
+Type=oneshot
+ExecStart=/opt/camera-streaming/bin/generate-status.sh
+

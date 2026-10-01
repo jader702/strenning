@@ -1,0 +1,6 @@
+secrets/
+*.env.tmp
+*.service.tmp
+__pycache__/
+*.pyc
+status.json

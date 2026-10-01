@@ -125,6 +125,7 @@ echo "==> Configurando acesso ao painel admin"
 ADMIN_USER="admin"
 ADMIN_PASS="$(openssl rand -base64 12)"
 htpasswd -bc /etc/nginx/.cameras-htpasswd "$ADMIN_USER" "$ADMIN_PASS"
+chown root:www-data /etc/nginx/.cameras-htpasswd
 chmod 640 /etc/nginx/.cameras-htpasswd
 
 echo "==> Iniciando servicos"

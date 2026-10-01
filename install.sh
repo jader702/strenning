@@ -100,8 +100,8 @@ server {
     location /admin/ {
         auth_basic "Painel";
         auth_basic_user_file /etc/nginx/.cameras-htpasswd;
-        alias $WEB_DIR/admin/;
-        try_files \$uri \$uri/ =404;
+        root $WEB_DIR;
+        index index.html;
         add_header Cache-Control "no-store, no-cache";
     }
 

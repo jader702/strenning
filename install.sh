@@ -19,10 +19,11 @@ fi
 
 echo "==> Instalando dependencias"
 apt-get update -qq
-apt-get install -y -qq git ffmpeg python3 python3-pip nginx certbot python3-certbot-nginx openssl
+apt-get install -y -qq git ffmpeg python3 python3-pip python3-venv nginx certbot python3-certbot-nginx openssl
 
-echo "==> Instalando Flask"
-pip3 install -q flask
+echo "==> Criando virtualenv e instalando Flask"
+python3 -m venv /opt/camera-streaming-venv
+/opt/camera-streaming-venv/bin/pip install -q flask
 
 echo "==> Clonando repositorio"
 if [ -d "$INSTALL_DIR/.git" ]; then

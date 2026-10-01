@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/camera-streaming
-ExecStart=/opt/camera-streaming/bin/admin-api.py
+ExecStart=/opt/camera-streaming-venv/bin/python /opt/camera-streaming/bin/admin-api.py
 Restart=always
 RestartSec=3
 

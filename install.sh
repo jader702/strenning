@@ -120,10 +120,11 @@ ln -sf "$NGINX_CONF" /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 nginx -t
 
-echo "==> Configurando senha do painel admin"
+echo "==> Configurando acesso ao painel admin"
 echo ""
-echo "Digite a senha para acessar o painel /admin/:"
-htpasswd -c /etc/nginx/.cameras-htpasswd admin
+read -r -p "Usuario do painel (ex: admin): " ADMIN_USER
+ADMIN_USER="${ADMIN_USER:-admin}"
+htpasswd -c /etc/nginx/.cameras-htpasswd "$ADMIN_USER"
 chmod 640 /etc/nginx/.cameras-htpasswd
 
 echo "==> Iniciando servicos"
@@ -140,8 +141,16 @@ if [[ "${ssl_resp,,}" == "s" ]]; then
 fi
 
 echo ""
+PROTO="http"
+if systemctl is-active certbot >/dev/null 2>&1 || [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+  PROTO="https"
+fi
+
+echo ""
 echo "============================================"
 echo " Instalacao concluida!"
-echo " Site:   http://$DOMAIN/"
-echo " Painel: http://$DOMAIN/admin/"
+echo ""
+echo " Site:    $PROTO://$DOMAIN/"
+echo " Painel:  $PROTO://$DOMAIN/admin/"
+echo " Usuario: $ADMIN_USER"
 echo "============================================"

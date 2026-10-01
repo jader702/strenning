@@ -19,7 +19,7 @@ fi
 
 echo "==> Instalando dependencias"
 apt-get update -qq
-apt-get install -y -qq git ffmpeg python3 python3-pip python3-venv nginx certbot python3-certbot-nginx openssl
+apt-get install -y -qq git ffmpeg python3 python3-pip python3-venv nginx certbot python3-certbot-nginx openssl apache2-utils
 
 echo "==> Criando virtualenv e instalando Flask"
 python3 -m venv /opt/camera-streaming-venv

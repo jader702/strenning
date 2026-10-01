@@ -8,14 +8,13 @@ WEB_DIR="/var/www/cameras"
 DOMAIN="${1:-}"
 
 if [ "$(id -u)" -ne 0 ]; then
-  echo "Execute como root: sudo bash install.sh SEU_DOMINIO"
+  echo "Execute como root: sudo bash install.sh [DOMINIO_OU_IP]"
   exit 1
 fi
 
 if [ -z "$DOMAIN" ]; then
-  echo "Uso: sudo bash install.sh SEU_DOMINIO"
-  echo "Exemplo: sudo bash install.sh cameras.exemplo.com.br"
-  exit 1
+  DOMAIN="$(hostname -I | awk '{print $1}')"
+  echo "Nenhum dominio informado, usando IP: $DOMAIN"
 fi
 
 echo "==> Instalando dependencias"
@@ -134,10 +133,14 @@ systemctl reload nginx
 
 echo ""
 echo "==> SSL com Let's Encrypt"
-read -r -p "Configurar SSL automaticamente agora? (s/N): " ssl_resp
-if [[ "${ssl_resp,,}" == "s" ]]; then
-  certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email
-  systemctl reload nginx
+if [[ "$DOMAIN" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "IP detectado, SSL nao sera configurado (requer dominio)."
+else
+  read -r -p "Configurar SSL automaticamente agora? (s/N): " ssl_resp
+  if [[ "${ssl_resp,,}" == "s" ]]; then
+    certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email
+    systemctl reload nginx
+  fi
 fi
 
 echo ""
